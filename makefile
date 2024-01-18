@@ -6,3 +6,6 @@ run:build
 	go run ./cmd/web
 git:
 	git init
+clean:
+	clear
+	

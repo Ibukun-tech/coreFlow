@@ -7,34 +7,45 @@ import (
 	"net/http"
 	"path/filepath"
 	"text/template"
+
+	model "github.com/Ibukun-tech/coreFlow/pkg/Model"
+	"github.com/Ibukun-tech/coreFlow/pkg/config"
 )
 
-func ParseTemplate(w http.ResponseWriter, locat string) {
+var app *config.AppConfig
+
+func NewTemplate(a *config.AppConfig) {
+	app = a
+}
+func AddDefaultData(td *model.TemplateData) *model.TemplateData {
+	return td
+}
+func ParseTemplate(w http.ResponseWriter, locat string, td *model.TemplateData) {
 	// create my template cache
-	tc, err := CreateTemplate()
-	if err != nil {
-		log.Fatal(err)
-	}
+	tc := app.TemplateCache
 	// Get requested template from cache
 	t, ok := tc[locat]
 	if !ok {
-		log.Println(err)
+		log.Println("could not get template from template cache")
 	}
 	buff := new(bytes.Buffer)
-	err = t.Execute(buff, nil)
-	if err != nil {
-		log.Println(err)
-	}
+	td = AddDefaultData(td)
+	t.Execute(buff, td)
+	// if err != nil {
+	// 	log.Println(err)
+	// }
 	// Render file
-	_, err = buff.WriteTo(w)
+	_, err := buff.WriteTo(w)
 	if err != nil {
 		log.Println(err)
 	}
 }
 func CreateTemplate() (map[string]*template.Template, error) {
+	// fmt.Println("check temp")
 	cache := map[string]*template.Template{}
 	//
 	pages, err := filepath.Glob("./template/*.page.html")
+	// fmt.Print(pages, "slice Pages")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -42,16 +53,19 @@ func CreateTemplate() (map[string]*template.Template, error) {
 
 		name := filepath.Base(page)
 		ts, err := template.New(name).ParseFiles(page)
+		// fmt.Println(ts, "ts1")
 		if err != nil {
 			return cache, err
 		}
 		matches, err := filepath.Glob("./template/*.layout.html")
+		// fmt.Println(matches, "matches page")
 		if err != nil {
 			return cache, err
 		}
 
 		if len(matches) > 0 {
 			ts, err = ts.ParseGlob("./template/*.layout.html")
+			fmt.Println(ts, "ts2")
 			if err != nil {
 				return cache, err
 			}
