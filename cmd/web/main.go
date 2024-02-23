@@ -26,7 +26,8 @@ var st *log.Logger
 // its the Home Page handler
 func main() {
 	var app config.AppConfig
-	fmt.Println("here")
+	// session := scs.New()
+	// session
 	ts, err := Render.CreateTemplate()
 	fmt.Println(err)
 	// fmt.Println(ts)
@@ -35,14 +36,10 @@ func main() {
 		log.Fatal(nil)
 	}
 	app.TemplateCache = ts
-	fmt.Println("here 1")
 	hand := Handler.NewRepo(&app)
 	Handler.NewHandlers(hand)
 	Render.NewTemplate(&app)
-	// Handle.Repo.Home
-	// fmt.Println("here 2")
-	// http.HandleFunc("/", hand.Home)
-	// Handler.Repo.About()
+
 	srv := &http.Server{
 		Addr:    ":2000",
 		Handler: routes(&app),
