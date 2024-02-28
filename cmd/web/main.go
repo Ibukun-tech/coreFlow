@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/Ibukun-tech/coreFlow/pkg/Handler"
 	"github.com/Ibukun-tech/coreFlow/pkg/Render"
 	"github.com/Ibukun-tech/coreFlow/pkg/config"
+	"github.com/alexedwards/scs/v2"
 )
 
 type TemplateData struct {
@@ -22,11 +24,19 @@ type TemplateData struct {
 }
 
 var st *log.Logger
+var session *scs.SessionManager
+var app config.AppConfig
 
 // its the Home Page handler
 func main() {
-	var app config.AppConfig
-	// session := scs.New()
+	app.InProduction = false
+	session = scs.New()
+	session.Lifetime = 24 * time.Hour
+	session.Cookie.Persist = true
+	session.Cookie.SameSite = http.SameSiteLaxMode
+	session.Cookie.Secure = app.InProduction
+	app.SessionStore = session
+
 	// session
 	ts, err := Render.CreateTemplate()
 	fmt.Println(err)

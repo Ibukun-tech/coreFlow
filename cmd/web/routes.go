@@ -10,8 +10,8 @@ import (
 
 func routes(app *config.AppConfig) http.Handler {
 	mux := pat.New()
+	Nosurf(mux)
 	mux.Get("/", http.HandlerFunc(Handler.Repo.Home))
-	
 	mux.Get("/about", http.HandlerFunc(Handler.Repo.About()))
 	return mux
 }
