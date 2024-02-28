@@ -29,7 +29,8 @@ func NewHandlers(r *Repository) {
 	Repo = r
 }
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Home")
+	remoteIp := r.RemoteAddr
+	m.App.SessionStore.Put(r.Context(), "remote_ip", remoteIp)
 	Render.ParseTemplate(w, "home.page.html", &model.TemplateData{})
 }
 
@@ -41,9 +42,12 @@ func (m *Repository) About() handle {
 			"jjsjs": "hshsh",
 		}
 		fmt.Println(e)
+
 		St := make(map[string]string)
 		St["About"] = "You should work noew"
+		getIp, _ := m.App.SessionStore.Get(r.Context(), "remote_ip").(byte)
 
+		St["remote_ip"] = string(getIp)
 		fmt.Println("About Page")
 		Render.ParseTemplate(w, "about.page.html", &model.TemplateData{
 			StringMap: St,

@@ -39,8 +39,7 @@ func main() {
 
 	// session
 	ts, err := Render.CreateTemplate()
-	fmt.Println(err)
-	// fmt.Println(ts)
+
 	if err != nil {
 		fmt.Println(err, "This error")
 		log.Fatal(nil)

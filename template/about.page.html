@@ -2,4 +2,9 @@
 {{define "content"}}
 <h1>About page</h1>
 <h1>{{index .StringMap "About"}}</h1>
+<p>{{ if ne (index .StringMap "remote_ip") ""}}
+<h1>Your remote Ip address is {{index .StringMap "remote_ip"}} </h1>{{else}}
+<h1>I don't know your Ip address <a href="/"> Home Page</a></h1>
+{{end}}
+</p>
 {{end}}

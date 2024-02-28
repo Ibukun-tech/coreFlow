@@ -45,7 +45,6 @@ func CreateTemplate() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 	//
 	pages, err := filepath.Glob("./template/*.page.html")
-	// fmt.Print(pages, "slice Pages")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -53,19 +52,16 @@ func CreateTemplate() (map[string]*template.Template, error) {
 
 		name := filepath.Base(page)
 		ts, err := template.New(name).ParseFiles(page)
-		// fmt.Println(ts, "ts1")
 		if err != nil {
 			return cache, err
 		}
 		matches, err := filepath.Glob("./template/*.layout.html")
-		// fmt.Println(matches, "matches page")
 		if err != nil {
 			return cache, err
 		}
 
 		if len(matches) > 0 {
 			ts, err = ts.ParseGlob("./template/*.layout.html")
-			fmt.Println(ts, "ts2")
 			if err != nil {
 				return cache, err
 			}
