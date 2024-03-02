@@ -10,6 +10,7 @@ import (
 
 	model "github.com/Ibukun-tech/coreFlow/pkg/Model"
 	"github.com/Ibukun-tech/coreFlow/pkg/config"
+	"github.com/justinas/nosurf"
 )
 
 var app *config.AppConfig
@@ -17,10 +18,11 @@ var app *config.AppConfig
 func NewTemplate(a *config.AppConfig) {
 	app = a
 }
-func AddDefaultData(td *model.TemplateData) *model.TemplateData {
+func AddDefaultData(td *model.TemplateData, r *http.Request) *model.TemplateData {
+	td.CSRFtoken = nosurf.Token(r)
 	return td
 }
-func ParseTemplate(w http.ResponseWriter, locat string, td *model.TemplateData) {
+func ParseTemplate(w http.ResponseWriter, r *http.Request, locat string, td *model.TemplateData) {
 	// create my template cache
 	tc := app.TemplateCache
 	// Get requested template from cache
@@ -29,7 +31,7 @@ func ParseTemplate(w http.ResponseWriter, locat string, td *model.TemplateData) 
 		log.Println("could not get template from template cache")
 	}
 	buff := new(bytes.Buffer)
-	td = AddDefaultData(td)
+	td = AddDefaultData(td, r)
 	t.Execute(buff, td)
 	// if err != nil {
 	// 	log.Println(err)

@@ -13,6 +13,8 @@ func routes(app *config.AppConfig) http.Handler {
 	// mux := pat.New()
 	mux.Use(NoSurf)
 	mux.Use(SessionLoad)
+	mux.Post("/available-json", http.HandlerFunc(Handler.Repo.AvailableJson))
+	mux.Post("search-availability", http.HandlerFunc(Handler.Repo.PostAvailability))
 	mux.Get("/", http.HandlerFunc(Handler.Repo.Home))
 	mux.Get("/about", http.HandlerFunc(Handler.Repo.About()))
 	return mux
