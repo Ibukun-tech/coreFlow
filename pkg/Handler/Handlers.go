@@ -2,11 +2,13 @@ package Handler
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	model "github.com/Ibukun-tech/coreFlow/pkg/Model"
 	"github.com/Ibukun-tech/coreFlow/pkg/Render"
 	"github.com/Ibukun-tech/coreFlow/pkg/config"
+	"github.com/Ibukun-tech/coreFlow/pkg/forms"
 	"github.com/justinas/nosurf"
 )
 
@@ -38,8 +40,31 @@ func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
 }
 
 type handle func(http.ResponseWriter, *http.Request)
-type JsonResponse struct{}
+type JsonResponse struct {
+	Ok      bool   `json:"ok"`
+	Message string `json:"message"`
+}
 
+func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	reservation := model.Reservation{
+		FirstName: r.Form.Get("firstName"),
+		LastName:  r.Form.Get("lastName"),
+		Email:     r.Form.Get("email"),
+		Phone:     r.Form.Get("phone"),
+	}
+	form := forms.New(r.PostForm)
+	form.Has("firstName", r)
+	if !form.Valid() {
+		data := make(map[string]interface{})
+		data["reservation"] = reservation
+		return
+	}
+}
 func (m *Repository) AvailableJson(w http.ResponseWriter, r *http.Request) {
 
 }

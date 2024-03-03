@@ -1,5 +1,7 @@
 package model
 
+import "github.com/Ibukun-tech/coreFlow/pkg/forms"
+
 // TemplateData hold data set from handler to template
 type TemplateData struct {
 	StringMap map[string]string
@@ -10,4 +12,5 @@ type TemplateData struct {
 	Flash     string
 	Warning   string
 	Error     string
+	Forms     *forms.Forms
 }
