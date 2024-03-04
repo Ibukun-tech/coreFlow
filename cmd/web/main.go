@@ -28,8 +28,7 @@ var st *log.Logger
 var session *scs.SessionManager
 var app config.AppConfig
 
-// its the Home Page handler
-func main() {
+func Run() error {
 	app.InProduction = false
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -42,14 +41,22 @@ func main() {
 	ts, err := Render.CreateTemplate()
 
 	if err != nil {
-		fmt.Println(err, "This error")
-		log.Fatal(nil)
+		return err
 	}
 	app.TemplateCache = ts
 	hand := Handler.NewRepo(&app, &model.TemplateData{})
 	Handler.NewHandlers(hand)
 	Render.NewTemplate(&app)
 
+	return nil
+}
+
+// its the Home Page handler
+func main() {
+	err := Run()
+	if err != nil {
+		log.Fatal(err)
+	}
 	srv := &http.Server{
 		Addr:    ":2000",
 		Handler: routes(&app),

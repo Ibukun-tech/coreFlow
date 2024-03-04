@@ -21,13 +21,12 @@ func New(data url.Values) *Forms {
 	}
 }
 
-func (f *Forms) Required(r *http.Request, field ...string) {
+func (f *Forms) Required(field ...string) {
 	for _, v := range field {
 		value := f.Get(v)
 		if strings.TrimSpace(value) == "" {
 			f.Errors.Add(v, "This form cannot be Blank")
 		}
-
 	}
 }
 func (f *Forms) Has(field string, r *http.Request) bool {

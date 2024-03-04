@@ -10,6 +10,7 @@ import (
 
 func routes(app *config.AppConfig) http.Handler {
 	mux := chi.NewRouter()
+
 	// mux := pat.New()
 	mux.Use(NoSurf)
 	mux.Use(SessionLoad)
